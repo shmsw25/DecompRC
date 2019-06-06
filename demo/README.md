@@ -2,7 +2,7 @@
 
 This directory contains codes for demo.
 
-![Demo Screenshot](img/demo.png "Demo Screenshot")
+![Demo Screenshot](../img/demo.png "Demo Screenshot")
 
 
 To run the demo, please install `flask 1.0.2`. Place `model` directory with all pretrained models & BERT config and vocab files here, and run `python run-demo.py`. Then, `localhost:2019` will show a demo. You can change the port by modifying `run-demo.py`. Please note that the demo can be slow on cpu, so we recommend to run it on gpu.
