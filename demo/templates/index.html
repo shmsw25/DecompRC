@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Question Decomposition Demo</title>
+    <link href="../static/styles/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/styles/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/styles/pretty-checkbox.min.css"/>
+    <link rel="stylesheet" href="../static/styles/index.css"/>
+  </head>
+  <body>
+
+    <div id="navbar" class="container">
+      <h2 class="display-3" style="margin-top:20px; margin-bottom:0px;">
+      <h2 class="display-3" style="margin-top:20px; margin-bottom:0px;">
+        Answering Multi-hop Questions by Decomposition
+      </h2>
+      <p>
+        Reference: Sewon Min, Victor Zhong, Luke Zettlemoyer, Hannaneh Hajishirzi.
+        "Multi-hop Reading Comprehension through Question Decomposition and Rescoring".
+        ACL 2019.
+        [<span id="description-button">Show Me Details!</span>]
+        <div id="description" style="display:none">
+          <hr />
+          <img src="../static/model.png", width="600px" height="200px" align="center"><br />
+          This demo is based on <b><i>DecompRC</i></b>, the main model from our paper.<br />
+          First, <i>DecompRC</i> decomposes the question with respect to the reasoning type (bridging or intersection).
+          This module is trained on 200 multi-hop questions.<br />
+          Then, each sub-question is answered by BERT-based single-hop reading comprehension model.
+          This module is trained on 105K single-hop questions.<br />
+          If you want <i>DecompRC</i> to decide on the reasoning type for you, it will go through a decomposition scorer to determine which reasoning type is best suitable for your question. <br />
+          <i class="fa fa-hand-o-right"> </i>
+            Paper: [<a href="" target="_blank">link</a>] |
+            Code for the paper: [<a href="https://github.com/shmsw25/DecompRC" target="_blank">link</a>] |
+            Code for this demo: [<a href="https://github.com/shmsw25/DecompRC/blob/master/demo" target="_blank">link</a>] <br />
+          <i class="fa fa-hand-o-right"> </i>
+            For any question, please contact <a href="https://shmsw25.github.io" target="_blank">Sewon Min</a>.
+          <hr />
+        </div>
+      </p>
+      <p>
+        <b>Instruction</b>
+        <br />
+        Select a question from <a href="https://hotpotqa.github.io" target="_blank">HotpotQA</a>, or write your own question with multiple paragraphs.
+        Remember, the answer to the question should be a <i>span</i> from one of paragraphs.
+        <br />
+        You can ask <b><i>Bridging & Intersection</i></b> questions. [<span id="type-description-button">What are they?</span>]
+        <div id="type-description" style="display:none">
+          <hr />
+          <i class="fa fa-hand-o-right"> </i> <i>Bridging</i> requires finding the first-hop evidence in order to find another, second-hop evidence.
+          <br />
+          Example: Which team does the player named 2015 Diamond Head Classics MVP play for?
+          <br />
+          Desired Decomposition: (1) Which player named 2015 Diamond Head Classics MVP? (2) Which team does [ANSWER] play for?
+          <br /><br />
+          <i class="fa fa-hand-o-right"> </i> <i>Intersection</i> requires finding an entity that satisfies two independent conditions.
+          <br />
+          Example: Stories USA starred which actor and comedian from ‘The Office’?
+          <br />
+          Desired Decomposition: (1) Stories USA starred which actor and comedian? (2) Which actor and comedian from ‘The Office’?
+          <hr />
+        </div>
+        <!--(Comparison and one-hop will be included in the future)
+        You can specify if the question is bridging or intersection (faster), or asks the model to decide it for you (slower).
+        <br />
+        <i class="fa fa-hand-o-right"> </i> If you choose <b><i>Hotpot Examples</i></b>, it shows example questions & paragraphs from <a href="https://hotpotqa.github.io" target="_blank">HotpotQA</a>.
+        <br />
+        <i class="fa fa-hand-o-right"> </i> If you choose <b><i>My Input</i></b>, you can write down your own question and paragraphs.
+        You can also select a category and choose paragraphs of your interest.
+        If you select multiple paragraphs, it will sometimes show recommended multi-hop questions, so that you can get an idea of which question to write.
+        -->
+      </p>
+    </div>
+    <div class="container" id="container" role="main">
+
+      <!-- Mode -->
+      <div id="mode-container" class="radio-box-container">
+        <div class="pretty p-default p-curve">
+          <input type="radio" name="color" class="mode" value="0" checked/>
+          <div class="state p-primary-o">
+              <label>HotpotQA Examples</label>
+          </div>
+        </div>
+        <div class="pretty p-default p-curve">
+          <input type="radio" name="color" class="mode" value="1" />
+          <div class="state p-primary-o">
+              <label>My Input</label>
+          </div>
+        </div>
+        <div id="mode-tooltip" class="my-tooltip tooltip-hidden"></div>
+      </div>
+
+      <!-- Reasoning type  -->
+      <div id="reasoning-type-container" class="radio-box-container">
+        <div class="pretty p-icon p-round">
+          <input type="radio" name="reasoning" class="reasoning-type" value="0" />
+          <div class="state p-primary">
+            <i class="icon mdi mdi-check"></i>
+            <label>Bridging</label>
+          </div>
+        </div>
+        <div class="pretty p-icon p-round">
+          <input type="radio" name="reasoning" class="reasoning-type" value="1" />
+          <div class="state p-primary">
+            <i class="icon mdi mdi-check"></i>
+            <label>Intersection</label>
+          </div>
+        </div>
+        <div class="pretty p-icon p-round">
+          <input type="radio" name="reasoning" class="reasoning-type" value="2" checked />
+          <div class="state p-primary">
+            <i class="icon mdi mdi-check"></i>
+            <label>Decide for me!</label>
+          </div>
+        </div>
+        <div id="reasoning-type-tooltip" class="my-tooltip tooltip-hidden"></div>
+      </div>
+
+      <!-- Paragraph Choice  -->
+      <div id="paragraph-choice-container" class="radio-box-container paragraph-choice-container" style="display:none">
+        <div class="pretty p-icon p-round">
+          <input type="radio" name="icon_solid" class="paragraph-choice" value="0" />
+          <div class="state p-danger">
+            <i class="icon glyphicon glyphicon-ok"></i>
+            <label>Sports</label>
+          </div>
+        </div>
+        <div class="pretty p-icon p-round">
+          <input type="radio" name="icon_solid" class="paragraph-choice" value="1" />
+          <div class="state p-warning">
+            <i class="icon glyphicon glyphicon-ok"></i>
+            <label>Art & Media</label>
+          </div>
+        </div>
+        <div class="pretty p-icon p-round">
+          <input type="radio" name="icon_solid" class="paragraph-choice" value="2" />
+          <div class="state p-success">
+            <i class="icon glyphicon glyphicon-ok"></i>
+            <label>History & Place</label>
+          </div>
+        </div>
+        <div id="paragraph-choice-tooltip" class="my-tooltip tooltip-hidden"></div>
+      </div>
+
+      <div id="paragraph-chosen" class="radio-box-container paragraph-choice-container" style="display:none;">
+      </div>
+
+      <div id="question-recommendation" class="ratio-box-container paragraph-choice-container" style="display:none;">
+      </div>
+
+      <!-- Dropdown for Cached Examples -->
+      <div class="input-group" id="select-question">
+        <!--<span class="input-group-addon">Options</span>-->
+        <select id="question" class="form-control"></select>
+        <!--<input type="text" class="form-control">-->
+        <span class="input-group-addon btn btn-default run">Run</span>
+      </div>
+
+      <!-- Input box for User Input -->
+      <div class="input-group" id="write-question" style="display:none">
+        <input class="editOption" class="editable" placeholder="Write My Own Multi-hop Question" />
+        <span class="input-group-addon btn btn-default run">Run</span>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <!--<div id="paragraph-container-cached">
+            <div class="panel panel-default">
+              <div class="panel-heading" id="title1">paragraph #1</div>
+              <textarea style="resize:none" class="panel-body form-control" id="paragraph1" rows="6"></textarea>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading" id="title2">paragraph #2</div>
+              <textarea style="resize:none" class="panel-body form-control" id="paragraph2" rows="6"></textarea>
+            </div>
+          </div>-->
+          <div id="paragraph-container-user">
+            <div class="panel panel-default">
+              <textarea style="resize:none" class="panel-body form-control" id="paragraph" rows="20" placeholder="Write paragraphs, seperated by newlines"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div id="loading" style="display:none">
+            <img src="https://webster.cs.washington.edu/images/babynames/loading.gif" alt="loading icon" />
+            Loading...
+          </div>
+          <div id="answer"></div>
+        </div>
+      </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="../static/jquery-3.1.0.min.js"></script>
+    <script src="../static/jszip.min.js"></script>
+    <script src="../static/index.js"></script>
+
+  </body>
+</html>
+
+
