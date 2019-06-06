@@ -41,7 +41,7 @@ from qa.optimization import BERTAdam
 from qa.multipara_prepro import get_dataloader
 from hotpot_evaluate_v1 import normalize_answer
 
-MODEL_DIR = "../DecompRC/model/"
+MODEL_DIR = "model/"
 
 class DecompRC(object):
 

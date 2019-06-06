@@ -1,6 +1,8 @@
 # Multi-hop Reading Comprehension through Question Decomposition and Rescoring
 
 This is an original implementation of the following paper.
+[[Paper PDF](link-to-do)]
+
 
 ```
 @inproceedings{ min2019multi,
@@ -10,22 +12,23 @@ This is an original implementation of the following paper.
   year={ 2019 }
 }
 ```
-[[Paper PDF](link-to-do)]
 
 Check out our [Demo](link), which answers to the multi-hop question in a real time!
 ![Demo Screenshot](img/demo.png "Demo Screenshot")
 
-Contact: [Sewon Min](https://shmsw25.github.io)
-
+---
 
 ## Model Description
 
 Our model, *DecompRC*, answers to the multi-hop question by decomposition. It decomposes the question into a set of sub-questions according to the reasoning type (bridging, intersection, comparison and one hop), answers each sub-question through single-hop reading comprehension model, and uses a decomposition scorer to determine the most suitable decomposition & final answer.
 
+---
+
 ![model-slide-1](img/model-slide-1.png "model-slide-1")
 ![model-slide-2](img/model-slide-2.png "model-slide-2")
 ![model-slide-3](img/model-slide-3.png "model-slide-3")
 
+---
 
 *DecompRC* was submitted to the [HotpotQA leaderboard](https://hotpotqa.github.io) in Feb, 2019 and is still the best performing model out of models submitted to both distractor setting and full wiki setting (as of Jun, 2019).
 
@@ -53,13 +56,13 @@ We highly recommend to download the pretrained model first (following the instru
 
 ### Preprocessing
 
-1. Download HotpotQA data and Pretrained BERT
+##### 1. Download HotpotQA data and Pretrained BERT
 
 You can download original HotpotQA data (`train`, `dev-distractor`) from [HotpotQA website](https://hotpotqa.github.io).
 
 You can download pretrained Tensorflow BERT from [Google's original BERT repo](https://github.com/google-research/bert). This code is tested on BERT-Base, Uncased. You can convert tf checkpoint into pytorch via `convert_tf_checkpoint_to_pytorch.py`.
 
-2. Convert HotpotQA into SQuAD style
+##### 2. Convert HotpotQA into SQuAD style
 
 The following command converts HotpotQA into SQuAD style, and store files into `data/hotpot-all` directory.
 ```
@@ -74,15 +77,15 @@ If you place downloaded `DecompRC-all-models-and-data.zip`, unzip it & place `da
 
 The following is the step-by-step instruction of each procedure.
 
-1. Decomposition Model
+##### 1. Decomposition Model
 ```
-  # Bridging
-  python3 main.py --do_predict --model span-predictor --output_dir out/decom-bridge \
+# Bridging
+python3 main.py --do_predict --model span-predictor --output_dir out/decom-bridge \
               --init_checkpoint model/decom_bridge/model.pt \
               --predict_file data/hotpot-all/dev.json,data/decomposition-data/decomposition-bridge-dev-v1.json \
               --max_seq_length 100 --max_n_answers 1 --prefix dev_ --with_key
-  # Intersection
-  python3 main.py --do_predict --model span-predictor --output_dir out/decom-intersec \
+# Intersection
+python3 main.py --do_predict --model span-predictor --output_dir out/decom-intersec \
               --init_checkpoint model/decom_intersec/model.pt \
               --predict_file data/hotpot-all/dev.json,data/decomposition-data/decomposition-intersec-dev-v1.json \
               --max_seq_length 100 --max_n_answers 1 --prefix dev_
@@ -90,22 +93,21 @@ The following is the step-by-step instruction of each procedure.
 
 You can adjust `--predict_batch_size` based on memory availability.
 
-2. Single-hop RC Model
+##### 2. Single-hop RC Model
 
 The following is the code for bridging.
 ```
-  python3 run_decomposition.py --task decompose --data_type dev_b --out_name out/decom-bridge
-  python3 main.py --do_predict --output_dir out/onehop \
-    --predict_file data/decomposed/dev_b.1.json \
-    --init_checkpoint out/onehop/model1.pt,out/onehop/model2.pt,out/onehop/model3.pt \
-    --prefix dev_b_1_ --n_best_size 4
-  python3 run_decomposition.py --task plug --data_type dev_b --topk 10
-  python3 main.py --do_predict --output_dir out/onehop \
-    --predict_file data/decomposed/dev_b.2.json \
-    --init_checkpoint out/onehop/model1.pt,out/onehop/model2.pt,out/onehop/model3.pt \
-    --prefix dev_b_2_ --n_best_size 4
-  python3 run_decomposition.py --task aggregate-bridge --data_type dev_b --topk 10
-
+python3 run_decomposition.py --task decompose --data_type dev_b --out_name out/decom-bridge
+python3 main.py --do_predict --output_dir out/onehop \
+            --predict_file data/decomposed/dev_b.1.json \
+            --init_checkpoint out/onehop/model1.pt,out/onehop/model2.pt,out/onehop/model3.pt \
+            --prefix dev_b_1_ --n_best_size 4
+python3 run_decomposition.py --task plug --data_type dev_b --topk 10
+python3 main.py --do_predict --output_dir out/onehop \
+            --predict_file data/decomposed/dev_b.2.json \
+            --init_checkpoint out/onehop/model1.pt,out/onehop/model2.pt,out/onehop/model3.pt \
+            --prefix dev_b_2_ --n_best_size 4
+python3 run_decomposition.py --task aggregate-bridge --data_type dev_b --topk 10
 ```
 
 The first command preprocesses the decomposed sub-questions according to the output from the decomposition model (stored in `out/decom-bridge`). Then, the second commands runs the RC model for the first sub-question. The third command runs the code for plugging the answer to the first sub-question into the second sub-question. Then the next command runs the RC  model for the second sub-question. Finally, the last command aggregates the outputs.
@@ -115,16 +117,16 @@ If everything runs properly, you will obtain `data/decomposed-predictions/bridge
 You can go through the similar process for intersection.
 
 ```
-  python3 run_decomposition.py --task decompose --data_type dev_i --out_name out/decom-intersec
-  python3 main.py --do_predict --output_dir out/onehop
-    --predict_file data/decomposed/dev_i.1.json \
-    --init_checkpoint out/onehop/model1.pt,out/onehop/model2.pt,out/onehop/model3.pt \
-    --prefix dev_i_1_ --n_best_size 4
-  python3 main.py --do_predict --output_dir out/onehop \
-    --predict_file data/decomposed/dev_i.2.json \
-    --init_checkpoint out/onehop/model1.pt,out/onehop/model2.pt,out/onehop/model3.pt \
-    --prefix dev_i_2_ --n_best_size 4
-  python3 run_decomposition.py --task aggregate-intersec --data_type dev_i --topk 10
+python3 run_decomposition.py --task decompose --data_type dev_i --out_name out/decom-intersec
+python3 main.py --do_predict --output_dir out/onehop
+            --predict_file data/decomposed/dev_i.1.json \
+            --init_checkpoint out/onehop/model1.pt,out/onehop/model2.pt,out/onehop/model3.pt \
+            --prefix dev_i_1_ --n_best_size 4
+python3 main.py --do_predict --output_dir out/onehop \
+            --predict_file data/decomposed/dev_i.2.json \
+            --init_checkpoint out/onehop/model1.pt,out/onehop/model2.pt,out/onehop/model3.pt \
+            --prefix dev_i_2_ --n_best_size 4
+python3 run_decomposition.py --task aggregate-intersec --data_type dev_i --topk 10
 ```
 
 Note that for intersection questions, there is no plugging process.
@@ -133,23 +135,23 @@ When you are done, you will obtain `data/decomposed-predictions/intersec_decompo
 Finally, for the option of `original`, the original questions are answered by RC model.
 
 ```
-  python3 main.py --do_predict --output_dir out/hotpot \
-    --predict_file data/hotpot-all/dev.json \
-    --init_checkpoint model/hotpot/model.pt --max_seq_length 300 --prefix dev_ --n_best_size 4
-  python3 run_decomposition.py --task onehop --data_type dev --topk 10
+python3 main.py --do_predict --output_dir out/hotpot \
+            --predict_file data/hotpot-all/dev.json \
+            --init_checkpoint model/hotpot/model.pt --max_seq_length 300 --prefix dev_ --n_best_size 4
+python3 run_decomposition.py --task onehop --data_type dev --topk 10
 ```
 
 When you are done, you will obtain `data/decomposed-predictions/onehop_decomposed_dev_nbest_predictions.json`.
 
 *Note*: Code for comparison questions is under construction. For now, please use the released intermediate outputs.
 
-3. Decomposition Scorer
+##### 3. Decomposition Scorer
 
 ```
-  python3 main.py --do_predict --output_dir out/scorer --model classifier \
-    --predict_file data/hotpot-all/dev.json,comparison,bridge,intersec,onehop \
-    --init_checkpoint model/scorer/model.pt \
-    --max_seq_length 400 --prefix dev_
+python3 main.py --do_predict --output_dir out/scorer --model classifier \
+            --predict_file data/hotpot-all/dev.json,comparison,bridge,intersec,onehop \
+            --init_checkpoint model/scorer/model.pt \
+            --max_seq_length 400 --prefix dev_
 ```
 
 The F1 score printed from this command is the final F1 score of DecompRC on the dev set of  HotpotQA. It stores the score for each reasoning type in `out/scorer/class_scores.json`. The answer to each question is the answer from the reasoning type with maximum score.
@@ -175,7 +177,7 @@ Details of each file/directory:
 To download everything altoegher, please click [here](https://drive.google.com/file/d/1p7VrJIEmUY9tAWmx31chhStS-KoRWOJQ/view?usp=sharing).
 The description of each file is as follows.
 
-1. Decomposition Examples
+##### 1. Decomposition Examples
 
 Annotated decomposition examples can be found inside `data/decomposition-data`.
 
@@ -206,7 +208,7 @@ Intersection Example
 
 For full details of the definition of bridging and intersection, decomposition method and annotation procedure, please see the paper.
 
-2. Pretrained Models
+##### 2. Pretrained Models
 
 All pretrained models can be found in `model`.
 
@@ -218,7 +220,7 @@ All pretrained models can be found in `model`.
 
 For full details of each model, please see the paper.
 
-3. Intermediate Outputs
+##### 3. Intermediate Outputs
 
 We also release the intermediate outputs for people hoping to save time to make an inference on the training data. Files can be found in `data/decomposition-predictions`
 
