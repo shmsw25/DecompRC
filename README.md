@@ -16,13 +16,11 @@ This is an original implementation of the following paper.
 Check out our [Demo](link), which answers to the multi-hop question in a real time!
 ![Demo Screenshot](img/demo.png "Demo Screenshot")
 
----
 
 ## Model Description
 
 Our model, *DecompRC*, answers to the multi-hop question by decomposition. It decomposes the question into a set of sub-questions according to the reasoning type (bridging, intersection, comparison and one hop), answers each sub-question through single-hop reading comprehension model, and uses a decomposition scorer to determine the most suitable decomposition & final answer.
 
----
 
 ![model-slide-1](img/model-slide-1.png "model-slide-1")
 ![model-slide-2](img/model-slide-2.png "model-slide-2")
@@ -41,7 +39,7 @@ This repo contains:
 - pretrained models
 - intermediate output of DecompRC
 
-This code is based on the earlier version of [Pytorch BERT implementation from HuggingFace](https://github.com/huggingface/pytorch-pretrained-BERT). For all models using BERT, we used uncased version of BERT Base.
+This code is based on the earlier version of [Pytorch BERT implementation from HuggingFace](https://github.com/huggingface/pytorch-pretrained-BERT). For all models using BERT, we used an uncased version of BERT Base.
 This code is tested on Python 3.5.2 and Pytorch 1.1.0.
 
 ## Code
@@ -156,7 +154,12 @@ python3 main.py --do_predict --output_dir out/scorer --model classifier \
 
 The F1 score printed from this command is the final F1 score of DecompRC on the dev set of  HotpotQA. It stores the score for each reasoning type in `out/scorer/class_scores.json`. The answer to each question is the answer from the reasoning type with maximum score.
 
-To display the breakdown of F1 score using `prettytable` and save the final prediction file that is comparable to the submission for official HotpotQA evaluation, please run `python3 show_result.py --data_file {ORIGINAL_HOTPOT_DEV_FILE} --prediction_file {FILE_TO_SAVE}`.
+To display the breakdown of F1 score using `prettytable` and save the final prediction file that is comparable to the submission for official HotpotQA evaluation, please run
+
+```
+python3 show_result.py --data_file {ORIGINAL_HOTPOT_DEV_FILE} --prediction_file {FILE_TO_SAVE}
+```
+
 
 ## Demo
 
@@ -191,7 +194,7 @@ Each datapoint is a dictionary with two keys, `id` and `question`.
 - `id` is an id matching with the original HotpotQA id.
 - `question` is the question with annotation. All words in the question are lowercased, and the only uppercase is special tokens `S` and `K` (`K` is only for bridging). `S` indicates the start and end of the span, containing multiple words. `K` indicates the start and end of the keyword, which is always one word.
 
-Briging Example
+An Example of bridging
 
 - question in the dictionary: `S alice david is the voice of lara croft in a video K game K S developed by which company ?`
 - original question: `alice david is the voice of lara croft in a video game developed by which company?`
@@ -199,7 +202,7 @@ Briging Example
 - annotated keyword: `game`
 - desired decomposition: (1) `alice david is the voice of lara croft in which video game ?` (2) `[ANSWER] developed by which company ?`
 
-Intersection Example
+An Example of intersection
 
 - question in the dictionary: `what former city, S now the fourth - largest russian city S , was the belarusian state technological university evacuated to in 1941?`
 - original question:: `what former city, now the fourth - largest russian city , was the belarusian state technological university evacuated to in 1941?`

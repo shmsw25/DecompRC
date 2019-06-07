@@ -1,7 +1,5 @@
 # DecompRC: Multi-hop Reading Comprehension by Decomposition
 
-Here, we describe how to train DecompRC.
-
 ## Model Description
 
 Our model, *DecompRC*, answers to the multi-hop question by decomposition. It decomposes the question into a set of sub-questions according to the reasoning type (bridging, intersection, comparison and single-hop), answers each sub-question through single-hop reading comprehension model, and uses a decomposition scorer to output the most suitable decomposition & final answer.

@@ -27,10 +27,10 @@ inference:
 			--prefix dev_b_2_ --n_best_size 4
 	# Saving the answer through bridging
 	python3 run_decomposition.py --task aggregate-bridge --data_type dev_b --topk 10
-	# Preprocessing suub-questions for intersection
+	# Preprocessing sub-questions for intersection
 	python3 run_decomposition.py --task decompose --data_type dev_i --out_name out/decom-intersec
 	# Answering to the first sub-question
-	python3 main.py --do_predict --output_dir out/onehop
+	python3 main.py --do_predict --output_dir out/onehop \
 			--predict_file data/decomposed/dev_i.1.json \
 			--init_checkpoint model/onehop/model1.pt,model/onehop/model2.pt,model/onehop/model3.pt \
 			--prefix dev_i_1_ --n_best_size 4
@@ -42,7 +42,7 @@ inference:
 	# Saving the answer through intersection
 	python3 run_decomposition.py --task aggregate-intersec --data_type dev_i --topk 10
 	# Answering to the original question
-	python3 main.py --do_predict --output_dir out/hotpot \
+	python3 main.py --do_predict --output_dir out/onehop \
 			--predict_file data/hotpot-all/dev.json \
 			--init_checkpoint model/hotpot/model.pt --max_seq_length 300 --prefix dev_ --n_best_size 4
 	# Saving the answer through original
@@ -52,6 +52,6 @@ inference:
 			--predict_file data/hotpot-all/dev.json,comparison,bridge,intersec,onehop \
 			--init_checkpoint model/scorer/best-model.pt \
 			--max_seq_length 400 --prefix dev_
-
+	
 
 
