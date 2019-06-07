@@ -13,7 +13,7 @@ This is an original implementation of the following paper.
 }
 ```
 
-Check out our [Demo](link), which answers to the multi-hop question in a real time!
+Check out our [Demo](http://allgood.cs.washington.edu:2019/), which answers to the multi-hop question in a real time!
 ![Demo Screenshot](img/demo.png "Demo Screenshot")
 
 

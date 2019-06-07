@@ -40,7 +40,7 @@ body {
   transition: visibility 0s .2s, opacity .2s linear;
 }
 img {
-  margin-bottom: 5px;
+  margin-bottom: 20px;
 }
 .radio-box-container, .label-container {
   margin-bottom: 10px;

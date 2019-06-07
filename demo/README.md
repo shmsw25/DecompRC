@@ -1,6 +1,6 @@
 ## DecompRC Demo
 
-This directory contains codes for demo.
+This directory contains codes for [demo](http://allgood.cs.washington.edu:2019/).
 
 ![Demo Screenshot](../img/demo.png "Demo Screenshot")
 

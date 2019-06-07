@@ -211,7 +211,7 @@ def read_squad_examples(logger, input_file, subqueries_file, is_training, debug,
                 elif q_type != "comparison":
                     continue
 
-            context = [t.lower() for t in paragraph['context']]
+            context = paragraph['context']
             qas = paragraph['qas']
 
             if type(context)==str:
@@ -224,8 +224,10 @@ def read_squad_examples(logger, input_file, subqueries_file, is_training, debug,
             try:
                 assert np.all([len(qa['answers'])==len(context) for qa in qas])
             except Exception:
-                embed()
+                from IPython import embed; embed()
                 assert False
+
+            context = [c.lower() for c  in context]
 
             doc_tokens_list, char_to_word_offset_list = [], []
             for paragraph_text in context:
