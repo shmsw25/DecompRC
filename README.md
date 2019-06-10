@@ -1,7 +1,7 @@
 # Multi-hop Reading Comprehension through Question Decomposition and Rescoring
 
 This is an original implementation of the following paper.
-[[Paper PDF](link-to-do)]
+[[Paper PDF](https://arxiv.org/pdf/1906.02916.pdf)]
 
 
 ```
