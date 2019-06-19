@@ -4,7 +4,7 @@ import argparse
 
 import numpy as np
 from tqdm import tqdm
-from prepro_util import find_span
+from prepro_util import find_span_from_text
 
 title_s = "<title>"
 title_e = "</title>"
@@ -104,7 +104,7 @@ def load_hotpot(args, data_type, only_bridge=False, only_comparison=False,
                         answers.append({'text': answer, 'answer_start': -1})
                     elif answer.lower() in contexts[-1]:
                         assert contexts[-1] == sent.lower().strip()
-                        curr_answers = find_span(contexts[-1], answer.lower())
+                        curr_answers = find_span_from_text(contexts[-1], contexts[-1].split(' '), answer.lower())
                         for i, curr_answer in enumerate(curr_answers):
                             curr_answers[i]['answer_start'] += offset
                         answers += curr_answers
