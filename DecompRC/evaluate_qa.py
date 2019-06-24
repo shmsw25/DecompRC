@@ -8,7 +8,7 @@ import numpy as np
 import tokenization
 from collections import defaultdict
 
-from operation import get_answer
+#from operation import get_answer
 from hotpot_evaluate_v1 import  f1_score
 
 rawResult = collections.namedtuple("RawResult",
@@ -209,6 +209,7 @@ def write_predictions(logger, all_examples, all_features, all_results, n_best_si
                     (prediction, groundtruth) in all_predictions.values()]
 
     elif all([type(pred[1])==tuple for pred in all_predictions.values()]):
+        # this is for comparison question
         final_prediction_and_groundtruth = {}
         for qas_id, (prediction, (op, query, groundtruth)) in all_predictions.items():
             assert qas_id.split('-')[-1].startswith('sub') and qas_id[-1] in ['0', '1']
