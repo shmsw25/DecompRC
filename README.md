@@ -58,7 +58,7 @@ We highly recommend to download the pretrained model first (following the instru
 
 You can download original HotpotQA data (`train`, `dev-distractor`) from [HotpotQA website](https://hotpotqa.github.io).
 
-You can download pretrained Tensorflow BERT from [Google's original BERT repo](https://github.com/google-research/bert). This code is tested on BERT-Base, Uncased. You can convert tf checkpoint into pytorch via `convert_tf_checkpoint_to_pytorch.py`.
+You can download pretrained Tensorflow BERT from [here](https://drive.google.com/file/d/1XaMX-u5ZkWGH3f0gPrDtrBK1lKDU-QFk/view?usp=sharing). This is converted from [Google's original BERT repo](https://github.com/google-research/bert).
 
 ##### 2. Convert HotpotQA into SQuAD style
 
