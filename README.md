@@ -30,6 +30,14 @@ Our model, *DecompRC*, answers to the multi-hop question by decomposition. It de
 
 *DecompRC* was submitted to the [HotpotQA leaderboard](https://hotpotqa.github.io) in Feb, 2019 and is still the best performing model out of models submitted to both distractor setting and full wiki setting (as of Jun, 2019).
 
+
+**Update:** We are releasing the [final predictions](https://drive.google.com/file/d/19h5afipdv0nc9uPhfDCDSWadojQpe0I_/view?usp=sharing) of the model on the dev data, along with its chosen reasoning type and decomposed sub-questions. Specifically, this json file contains a dictionary with
+- `answer`: answer text
+- `reasoning`: reasoning type, one of bridge, intersec, comparison & onehop
+- `queries`: sub-questions. For bridge and intersec, it is a string that concatenates two sub-questions. For comparison, it is a list of the first sub-question, the second sub-question and the operation. For onehop, it will simply have `None`.
+- `evidence`: This contains passages/sentences that QA model chooses the span from during the first hop or the second hop.
+
+
 ## Code description
 
 This repo contains:
